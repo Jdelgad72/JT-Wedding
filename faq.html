@@ -174,10 +174,10 @@
         {name:'Tanvi',email:'tanvihegde12@gmail.com'}
       ];
       for(const r of recipients){
-        await emailjs.send('service_1odtvqj','template_gluaxvw',{
+        await emailjs.send('service_1odtvqj','template_8fvtckb',{
           from_name:name,
           from_email:email,
-          message:`FAQ question from ${name} (${email}):\n\n${message}`,
+          message:message,
           to_name:r.name,
           to_email:r.email
         });
