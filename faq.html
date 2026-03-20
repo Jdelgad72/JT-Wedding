@@ -169,13 +169,19 @@
     btn.textContent='Sending...';
     status.textContent='';
     try{
-      await emailjs.send('service_1odtvqj','template_gluaxvw',{
-        from_name:name,
-        from_email:email,
-        message:`FAQ question from ${name} (${email}):\n\n${message}`,
-        to_name:'Tanvi & Justin',
-        to_email:'tanvi.justin.wedding@gmail.com'
-      });
+      const recipients=[
+        {name:'Justin',email:'Justindelgado182@gmail.com'},
+        {name:'Tanvi',email:'tanvihegde12@gmail.com'}
+      ];
+      for(const r of recipients){
+        await emailjs.send('service_1odtvqj','template_gluaxvw',{
+          from_name:name,
+          from_email:email,
+          message:`FAQ question from ${name} (${email}):\n\n${message}`,
+          to_name:r.name,
+          to_email:r.email
+        });
+      }
       status.textContent='Message sent! We\'ll be in touch soon.';
       this.reset();
     }catch(err){
