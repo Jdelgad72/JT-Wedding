@@ -17,7 +17,8 @@
     .topnav-brand{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--white);text-decoration:none}
     .topnav-links a{color:rgba(255,253,248,.75);text-decoration:none;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;margin-left:1.5rem;transition:color .3s}
     .topnav-links a:hover,.topnav-links a.active{color:var(--sand)}
-    @media(max-width:576px){.topnav-links{display:none}}
+    .topnav-menu-btn{display:none;background:none;border:1px solid rgba(255,253,248,.4);color:var(--white);padding:.3rem .75rem;font-size:1.3rem;cursor:pointer;line-height:1}
+    @media(max-width:576px){.topnav{position:relative;flex-wrap:wrap}.topnav-links{display:none;flex-direction:column;width:100%;padding:.75rem 0;gap:0}.topnav-links.open{display:flex}.topnav-links a{margin-left:0;padding:.6rem 0;border-bottom:1px solid rgba(255,253,248,.1)}.topnav-menu-btn{display:block}}
 
     /* HERO */
     .trivia-hero{background:linear-gradient(160deg,rgba(42,110,124,.88) 0%,rgba(196,147,63,.75) 100%),url('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1400&q=80') center/cover;padding:5rem 2rem 5rem;text-align:center;color:var(--white);position:relative;overflow:hidden}
@@ -102,6 +103,7 @@
 
 <nav class="topnav">
   <a class="topnav-brand" href="index.html">Tanvi <em>&amp;</em> Justin</a>
+  <button class="topnav-menu-btn" id="menuBtn">&#9776;</button>
   <div class="topnav-links">
     <a href="index.html">Home</a>
     <a href="travel.html">Travel</a>
@@ -285,6 +287,8 @@ function startGame(){
   document.getElementById('endScreen').classList.remove('show');
   renderQuestion();
 }
+
+document.getElementById('menuBtn').addEventListener('click',function(){document.querySelector('.topnav-links').classList.toggle('open');});
 
 document.getElementById('nextBtn').addEventListener('click', nextQuestion);
 document.getElementById('replayBtn').addEventListener('click', startGame);
