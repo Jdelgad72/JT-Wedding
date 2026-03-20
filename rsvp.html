@@ -131,10 +131,6 @@
               <option value="5">5 - Myself + 4</option>
             </select>
           </div>
-          <div class="mb-4 guests-field" id="meal-wrap">
-            <label class="form-label">Meal Preferences</label>
-            <div id="meal-fields-container"></div>
-          </div>
           <div class="mb-4 guests-field" id="allergy-wrap">
             <label class="form-label">Dietary Restrictions / Allergies</label>
             <input type="text" class="form-control" id="allergies" placeholder="e.g. nut allergy, gluten-free"/>
@@ -230,22 +226,11 @@
     const attendance=document.querySelector('input[name="attendance"]:checked')?.value;
     const attending=attendance==='yes';
     guestFields.forEach(f=>f.classList.toggle('visible',attending));
-    if(attending) generateMealFields();
+
     const msgPlaceholders={yes:'Share your wishes or a memory...',no:'Send the couple a warm message...'};
     document.getElementById('message').placeholder=msgPlaceholders[attendance]||'Share your wishes or a memory...';
   }));
 
-  document.getElementById('guestCount').addEventListener('change', generateMealFields);
-
-  function generateMealFields(){
-    const count=parseInt(document.getElementById('guestCount').value)||1;
-    const container=document.getElementById('meal-fields-container');
-    container.innerHTML='';
-    for(let i=0;i<count;i++){
-      const lbl=i===0?'Your Meal Preference':`Guest ${i+1} Meal Preference`;
-      container.innerHTML+=`<div class="mb-2"><label class="form-label" style="font-size:.68rem;opacity:.8;">${lbl}</label><select class="form-select" id="meal_${i}"><option value="veg">Vegetarian</option><option value="nonveg">Non-Vegetarian</option></select></div>`;
-    }
-  }
 
   document.getElementById('indiaArrival').addEventListener('change', updateDuration);
   document.getElementById('indiaDeparture').addEventListener('change', updateDuration);
@@ -270,11 +255,10 @@
 
     const attending=attendance==='yes';
     const guestCount=attending?parseInt(document.getElementById('guestCount').value)||1:0;
-    const meals=attending?Array.from({length:guestCount},(_,i)=>({guest:i===0?'Primary':(`Guest ${i+1}`),pref:document.getElementById(`meal_${i}`)?.value||'veg'})):[];
     const indiaArrival=document.getElementById('indiaArrival').value;
     const indiaDeparture=document.getElementById('indiaDeparture').value;
     const indiaDays=(indiaArrival&&indiaDeparture)?Math.round((new Date(indiaDeparture)-new Date(indiaArrival))/86400000):null;
-    const record={id:Date.now(),name,email,phone:document.getElementById('phone').value.trim(),attending,guests:guestCount,meals,indiaArrival,indiaDeparture,indiaDays,allergies:document.getElementById('allergies').value.trim(),message:document.getElementById('message').value.trim(),submittedAt:new Date().toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})};
+    const record={id:Date.now(),name,email,phone:document.getElementById('phone').value.trim(),attending,guests:guestCount,indiaArrival,indiaDeparture,indiaDays,allergies:document.getElementById('allergies').value.trim(),message:document.getElementById('message').value.trim(),submittedAt:new Date().toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})};
     const all=getAll(); all.push(record); localStorage.setItem('tanvi_justin_rsvps',JSON.stringify(all));
     sendNotifications(record).catch(err=>console.warn('Notification error:',err));
 
