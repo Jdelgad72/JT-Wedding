@@ -254,9 +254,14 @@
     <div style="text-align:center;margin-top:2.5rem;">
       <div class="cal-add-wrap" style="display:inline-block;">
         <button class="cal-add-btn" style="font-size:.72rem;padding:.5rem 1.4rem;" onclick="toggleCal(this)">+ Add All Events to Calendar</button>
-        <div class="cal-dropdown">
-          <a href="#" onclick="gcalAll();return false;"><span>📅</span> Google Calendar</a>
-          <a href="#" onclick="icsAll();return false;"><span>🍎</span> Apple / Outlook (.ics)</a>
+        <div class="cal-dropdown" style="min-width:230px;">
+          <div style="font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:#aaa;padding:.5rem 1rem .2rem;">Google Calendar</div>
+          <a id="gcal-0" href="#" target="_blank" rel="noopener"><span>📅</span> Mehendi — Dec 27</a>
+          <a id="gcal-1" href="#" target="_blank" rel="noopener"><span>📅</span> Muhurta &amp; Sangeet — Dec 28</a>
+          <a id="gcal-2" href="#" target="_blank" rel="noopener"><span>📅</span> Haldi &amp; Roce — Dec 29</a>
+          <a id="gcal-3" href="#" target="_blank" rel="noopener"><span>📅</span> Wedding Ceremony — Dec 30</a>
+          <div style="border-top:1px solid rgba(196,147,63,.2);margin:.3rem 0;"></div>
+          <a href="#" onclick="icsAll();return false;"><span>📥</span> Download All (.ics) — Apple / Outlook</a>
         </div>
       </div>
     </div>
@@ -319,22 +324,23 @@
     if(!isOpen) dd.classList.add('open');
   }
   document.addEventListener('click',e=>{if(!e.target.closest('.cal-add-wrap')) document.querySelectorAll('.cal-dropdown.open').forEach(el=>el.classList.remove('open'));});
-  function gcalAll(){
-    CAL_EVENTS.forEach((e,i)=>{
-      setTimeout(()=>{
-        const url=`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(e.name)}&dates=${e.start}/${e.end}&ctz=Asia%2FKolkata&details=${encodeURIComponent(e.desc)}&location=${encodeURIComponent(e.loc)}`;
-        window.open(url,'_blank');
-      }, i*400);
-    });
-  }
+  // Set Google Calendar hrefs directly on links (avoids popup blocker)
+  CAL_EVENTS.forEach((e,i)=>{
+    const url=`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(e.name)}&dates=${e.start}/${e.end}&ctz=Asia%2FKolkata&details=${encodeURIComponent(e.desc)}&location=${encodeURIComponent(e.loc)}`;
+    const el=document.getElementById('gcal-'+i);
+    if(el) el.href=url;
+  });
   function icsAll(){
-    const vevents=CAL_EVENTS.map(e=>`BEGIN:VEVENT\r\nDTSTART;TZID=Asia/Kolkata:${e.start}\r\nDTEND;TZID=Asia/Kolkata:${e.end}\r\nSUMMARY:${e.name}\r\nDESCRIPTION:${e.desc}\r\nLOCATION:${e.loc}\r\nUID:${e.start}-wedding@tanviandjustin.com\r\nEND:VEVENT`).join('\r\n');
-    const content=`BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Tanvi & Justin Wedding//EN\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\n${vevents}\r\nEND:VCALENDAR`;
+    const tz=`BEGIN:VTIMEZONE\r\nTZID:Asia/Kolkata\r\nBEGIN:STANDARD\r\nTZOFFSETFROM:+0530\r\nTZOFFSETTO:+0530\r\nTZNAME:IST\r\nDTSTART:19700101T000000\r\nEND:STANDARD\r\nEND:VTIMEZONE`;
+    const vevents=CAL_EVENTS.map(e=>`BEGIN:VEVENT\r\nDTSTART;TZID=Asia/Kolkata:${e.start}\r\nDTEND;TZID=Asia/Kolkata:${e.end}\r\nSUMMARY:${e.name}\r\nDESCRIPTION:${e.desc}\r\nLOCATION:${e.loc}\r\nUID:${e.start}-wedding@tanviandjustin.com\r\nSTATUS:CONFIRMED\r\nEND:VEVENT`).join('\r\n');
+    const content=`BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Tanvi & Justin Wedding//EN\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\n${tz}\r\n${vevents}\r\nEND:VCALENDAR`;
     const blob=new Blob([content],{type:'text/calendar;charset=utf-8'});
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
     a.download='Tanvi-Justin-Wedding-Events.ics';
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
   }
   const wd=new Date('2026-12-29T17:30:00+05:30');
   function tick(){
