@@ -149,6 +149,15 @@
             <label class="form-label">A Message for the Couple <span style="opacity:.5">(optional)</span></label>
             <textarea class="form-control" id="message" placeholder="Share your wishes or a memory..."></textarea>
           </div>
+          <div class="mb-4 guests-field" id="dance-wrap" style="background:rgba(196,147,63,.06);border:1px solid rgba(196,147,63,.25);border-radius:6px;padding:1.25rem 1.25rem 1rem;">
+            <p style="font-size:.85rem;color:var(--text);margin-bottom:.9rem;">At Indian weddings, it's a fun tradition for friends and family to put together short group dance performances for the couple!<br/><br/>No experience needed — we'll handle coordination and choreography. Just bring your energy and have fun 😄✨</p>
+            <label class="form-label" style="color:var(--gold);">Would you be interested in participating?</label>
+            <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.4rem;">
+              <label style="font-size:.85rem;cursor:pointer;"><input type="radio" name="dance" value="yes" style="accent-color:var(--gold);margin-right:.5rem;"/> Yes, I'm in! 💃</label>
+              <label style="font-size:.85rem;cursor:pointer;"><input type="radio" name="dance" value="maybe" style="accent-color:var(--gold);margin-right:.5rem;"/> Maybe — tell me more! 🤔</label>
+              <label style="font-size:.85rem;cursor:pointer;"><input type="radio" name="dance" value="no" style="accent-color:var(--gold);margin-right:.5rem;"/> I'll cheer from the audience 😊</label>
+            </div>
+          </div>
           <button type="submit" class="btn-submit" id="submitBtn">Send My RSVP</button>
           <p class="helper-note">Your reply is saved in this browser and can also notify the couple by email using the existing EmailJS setup below.</p>
         </form>
@@ -258,7 +267,8 @@
     const indiaArrival=document.getElementById('indiaArrival').value;
     const indiaDeparture=document.getElementById('indiaDeparture').value;
     const indiaDays=(indiaArrival&&indiaDeparture)?Math.round((new Date(indiaDeparture)-new Date(indiaArrival))/86400000):null;
-    const record={id:Date.now(),name,email,phone:document.getElementById('phone').value.trim(),attending,guests:guestCount,indiaArrival,indiaDeparture,indiaDays,allergies:document.getElementById('allergies').value.trim(),message:document.getElementById('message').value.trim(),submittedAt:new Date().toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})};
+    const danceAnswer=document.querySelector('input[name="dance"]:checked')?.value||null;
+    const record={id:Date.now(),name,email,phone:document.getElementById('phone').value.trim(),attending,guests:guestCount,indiaArrival,indiaDeparture,indiaDays,allergies:document.getElementById('allergies').value.trim(),message:document.getElementById('message').value.trim(),dance:danceAnswer,submittedAt:new Date().toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})};
     const all=getAll(); all.push(record); localStorage.setItem('tanvi_justin_rsvps',JSON.stringify(all));
     sendNotifications(record).catch(err=>console.warn('Notification error:',err));
 
