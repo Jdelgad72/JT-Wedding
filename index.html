@@ -110,6 +110,14 @@
     .tl-block{margin-top:.7rem;padding-top:.7rem;border-top:1px solid var(--sand-mid);}
     .tl-block:first-of-type{margin-top:.5rem;padding-top:.5rem;}
     .tl-time{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:.25rem;}
+    .cal-add-wrap{position:relative;margin-top:1rem;text-align:center;}
+    .cal-add-btn{background:none;border:1px solid rgba(196,147,63,.35);color:var(--gold);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;padding:.35rem .9rem;cursor:pointer;font-family:'Raleway',sans-serif;border-radius:2px;transition:background .2s,color .2s;}
+    .cal-add-btn:hover{background:var(--gold);color:#fff;}
+    .cal-dropdown{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#fff;border:1px solid rgba(196,147,63,.25);box-shadow:0 4px 18px rgba(0,0,0,.12);border-radius:4px;min-width:180px;z-index:200;overflow:hidden;}
+    .cal-dropdown.open{display:block;}
+    .cal-dropdown a{display:flex;align-items:center;gap:.6rem;padding:.7rem 1rem;font-size:.73rem;color:#333;text-decoration:none;font-family:'Raleway',sans-serif;letter-spacing:.04em;transition:background .15s;}
+    .cal-dropdown a:hover{background:#fdf8f0;}
+    .cal-dropdown a span{font-size:1rem;}
     .gallery-strip{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:280px 280px;gap:4px;}
     .gallery-strip img{width:100%;height:100%;object-fit:cover;transition:transform .5s;display:block;}
     .gallery-strip img:hover{transform:scale(1.04);}
@@ -223,18 +231,22 @@
       <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-card"><div class="tl-day">Sunday, Dec 27</div>
         <div class="tl-block"><div class="tl-time">Afternoon</div><div class="tl-event">Guest arrivals &amp; check-in at resort</div></div>
         <div class="tl-block"><div class="tl-time">Evening</div><div class="tl-event">Mehendi</div></div>
+        <div class="cal-add-wrap"><button class="cal-add-btn" onclick="toggleCal(this)">+ Add to Calendar</button><div class="cal-dropdown"><a href="#" onclick="gcal(0);return false;"><span>📅</span> Google Calendar</a><a href="#" onclick="ics(0);return false;"><span>🍎</span> Apple Calendar</a></div></div>
       </div></div>
       <div class="tl-item right reveal"><div class="tl-dot"></div><div class="tl-card"><div class="tl-day">Monday, Dec 28</div>
         <div class="tl-block"><div class="tl-time">Morning</div><div class="tl-event">Relaxation at the beach<br/>Explore the resort</div></div>
         <div class="tl-block"><div class="tl-time">Evening</div><div class="tl-event">Muhurta<br/>Sangeet</div></div>
+        <div class="cal-add-wrap"><button class="cal-add-btn" onclick="toggleCal(this)">+ Add to Calendar</button><div class="cal-dropdown"><a href="#" onclick="gcal(1);return false;"><span>📅</span> Google Calendar</a><a href="#" onclick="ics(1);return false;"><span>🍎</span> Apple Calendar</a></div></div>
       </div></div>
       <div class="tl-item reveal"><div class="tl-dot"></div><div class="tl-card"><div class="tl-day">Tuesday, Dec 29</div>
         <div class="tl-block"><div class="tl-time">Morning</div><div class="tl-event">Haldi &amp; Roce</div></div>
         <div class="tl-block"><div class="tl-time">Evening</div><div class="tl-event">Free to explore &amp; unwind</div></div>
+        <div class="cal-add-wrap"><button class="cal-add-btn" onclick="toggleCal(this)">+ Add to Calendar</button><div class="cal-dropdown"><a href="#" onclick="gcal(2);return false;"><span>📅</span> Google Calendar</a><a href="#" onclick="ics(2);return false;"><span>🍎</span> Apple Calendar</a></div></div>
       </div></div>
       <div class="tl-item right reveal"><div class="tl-dot"></div><div class="tl-card"><div class="tl-day">Wednesday, Dec 30</div>
         <div class="tl-block"><div class="tl-time">Afternoon</div><div class="tl-event">Vegetarian banana leaf meal</div></div>
         <div class="tl-block"><div class="tl-time">Evening</div><div class="tl-event">Wedding Ceremony &middot; 5:30 PM<br/>Reception Dinner</div></div>
+        <div class="cal-add-wrap"><button class="cal-add-btn" onclick="toggleCal(this)">+ Add to Calendar</button><div class="cal-dropdown"><a href="#" onclick="gcal(3);return false;"><span>📅</span> Google Calendar</a><a href="#" onclick="ics(3);return false;"><span>🍎</span> Apple Calendar</a></div></div>
       </div></div>
     </div>
   </div>
@@ -283,6 +295,34 @@
   },{threshold:.16});
   document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
 
+  const CAL_EVENTS=[
+    {name:"Mehendi — Tanvi & Justin's Wedding",start:"20261227T180000",end:"20261227T210000",desc:"An intimate evening of henna to begin the wedding celebrations at Manthan Beach Resort, Mangalore.",loc:"Manthan Beach Resort, Mangalore, Karnataka, India"},
+    {name:"Muhurta & Sangeet — Tanvi & Justin's Wedding",start:"20261228T180000",end:"20261228T220000",desc:"A sacred pre-wedding ritual followed by an evening of music, dance, and laughter at Manthan Beach Resort, Mangalore.",loc:"Manthan Beach Resort, Mangalore, Karnataka, India"},
+    {name:"Haldi & Roce — Tanvi & Justin's Wedding",start:"20261229T090000",end:"20261229T120000",desc:"Turmeric, rose water, and coconut milk applied to the couple by loved ones at Manthan Beach Resort, Mangalore.",loc:"Manthan Beach Resort, Mangalore, Karnataka, India"},
+    {name:"Wedding Ceremony & Reception — Tanvi & Justin",start:"20261230T173000",end:"20261230T220000",desc:"Wedding Ceremony at 5:30 PM followed by Reception Dinner at Manthan Beach Resort, Mangalore.",loc:"Manthan Beach Resort, Mangalore, Karnataka, India"}
+  ];
+  function toggleCal(btn){
+    const dd=btn.nextElementSibling;
+    const isOpen=dd.classList.contains('open');
+    document.querySelectorAll('.cal-dropdown.open').forEach(el=>el.classList.remove('open'));
+    if(!isOpen) dd.classList.add('open');
+  }
+  document.addEventListener('click',e=>{if(!e.target.closest('.cal-add-wrap')) document.querySelectorAll('.cal-dropdown.open').forEach(el=>el.classList.remove('open'));});
+  function gcal(i){
+    const e=CAL_EVENTS[i];
+    const url=`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(e.name)}&dates=${e.start}/${e.end}&ctz=Asia%2FKolkata&details=${encodeURIComponent(e.desc)}&location=${encodeURIComponent(e.loc)}`;
+    window.open(url,'_blank');
+  }
+  function ics(i){
+    const e=CAL_EVENTS[i];
+    const uid=`${e.start}-wedding@tanviandjustin.com`;
+    const content=`BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Tanvi & Justin Wedding//EN\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\nBEGIN:VEVENT\r\nDTSTART;TZID=Asia/Kolkata:${e.start}\r\nDTEND;TZID=Asia/Kolkata:${e.end}\r\nSUMMARY:${e.name}\r\nDESCRIPTION:${e.desc}\r\nLOCATION:${e.loc}\r\nUID:${uid}\r\nEND:VEVENT\r\nEND:VCALENDAR`;
+    const blob=new Blob([content],{type:'text/calendar;charset=utf-8'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=`${e.name.split('—')[0].trim().replace(/\s+/g,'-')}.ics`;
+    a.click();
+  }
   const wd=new Date('2026-12-29T17:30:00+05:30');
   function tick(){
     const diff=wd-new Date();
