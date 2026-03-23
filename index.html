@@ -311,11 +311,12 @@
   },{threshold:.16});
   document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
 
+  // Times in UTC (IST = UTC+5:30, so subtract 5h30m)
   const CAL_EVENTS=[
-    {name:"Mehendi — Tanvi & Justin's Wedding",start:"20261227T180000",end:"20261227T210000",desc:"An intimate evening of henna to begin the wedding celebrations at Manthan Beach Resort, Mangalore.",loc:"Manthan Beach Resort, Mangalore, India"},
-    {name:"Muhurta & Sangeet — Tanvi & Justin's Wedding",start:"20261228T180000",end:"20261228T220000",desc:"A sacred pre-wedding ritual followed by an evening of music, dance, and laughter at Manthan Beach Resort, Mangalore.",loc:"Manthan Beach Resort, Mangalore, India"},
-    {name:"Haldi & Roce — Tanvi & Justin's Wedding",start:"20261229T090000",end:"20261229T120000",desc:"Turmeric, rose water, and coconut milk applied to the couple by loved ones at Manthan Beach Resort, Mangalore.",loc:"Manthan Beach Resort, Mangalore, India"},
-    {name:"Wedding Ceremony & Reception — Tanvi & Justin",start:"20261230T173000",end:"20261230T220000",desc:"Wedding Ceremony at 5:30 PM followed by Reception Dinner at Manthan Beach Resort, Mangalore.",loc:"Manthan Beach Resort, Mangalore, India"}
+    {name:"Mehendi — Tanvi & Justin's Wedding",start:"20261227T123000Z",end:"20261227T153000Z",desc:"An intimate evening of henna to begin the wedding celebrations at Manthan Beach Resort, Mangalore.",loc:"Manthan Beach Resort, Mangalore, India"},
+    {name:"Muhurta & Sangeet — Tanvi & Justin's Wedding",start:"20261228T123000Z",end:"20261228T163000Z",desc:"A sacred pre-wedding ritual followed by an evening of music, dance, and laughter at Manthan Beach Resort, Mangalore.",loc:"Manthan Beach Resort, Mangalore, India"},
+    {name:"Haldi & Roce — Tanvi & Justin's Wedding",start:"20261229T033000Z",end:"20261229T063000Z",desc:"Turmeric, rose water, and coconut milk applied to the couple by loved ones at Manthan Beach Resort, Mangalore.",loc:"Manthan Beach Resort, Mangalore, India"},
+    {name:"Wedding Ceremony & Reception — Tanvi & Justin",start:"20261230T120000Z",end:"20261230T163000Z",desc:"Wedding Ceremony at 5:30 PM followed by Reception Dinner at Manthan Beach Resort, Mangalore.",loc:"Manthan Beach Resort, Mangalore, India"}
   ];
   function toggleCal(btn){
     const dd=btn.nextElementSibling;
@@ -324,16 +325,15 @@
     if(!isOpen) dd.classList.add('open');
   }
   document.addEventListener('click',e=>{if(!e.target.closest('.cal-add-wrap')) document.querySelectorAll('.cal-dropdown.open').forEach(el=>el.classList.remove('open'));});
-  // Set Google Calendar hrefs directly on links (avoids popup blocker)
+  // Set Google Calendar hrefs on page load (avoids popup blocker, uses UTC Z times)
   CAL_EVENTS.forEach((e,i)=>{
-    const url=`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(e.name)}&dates=${e.start}/${e.end}&ctz=Asia%2FKolkata&details=${encodeURIComponent(e.desc)}&location=${encodeURIComponent(e.loc)}`;
+    const url=`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(e.name)}&dates=${e.start}/${e.end}&details=${encodeURIComponent(e.desc)}&location=${encodeURIComponent(e.loc)}`;
     const el=document.getElementById('gcal-'+i);
     if(el) el.href=url;
   });
   function icsAll(){
-    const tz=`BEGIN:VTIMEZONE\r\nTZID:Asia/Kolkata\r\nBEGIN:STANDARD\r\nTZOFFSETFROM:+0530\r\nTZOFFSETTO:+0530\r\nTZNAME:IST\r\nDTSTART:19700101T000000\r\nEND:STANDARD\r\nEND:VTIMEZONE`;
-    const vevents=CAL_EVENTS.map(e=>`BEGIN:VEVENT\r\nDTSTART;TZID=Asia/Kolkata:${e.start}\r\nDTEND;TZID=Asia/Kolkata:${e.end}\r\nSUMMARY:${e.name}\r\nDESCRIPTION:${e.desc}\r\nLOCATION:${e.loc}\r\nUID:${e.start}-wedding@tanviandjustin.com\r\nSTATUS:CONFIRMED\r\nEND:VEVENT`).join('\r\n');
-    const content=`BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Tanvi & Justin Wedding//EN\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\n${tz}\r\n${vevents}\r\nEND:VCALENDAR`;
+    const vevents=CAL_EVENTS.map(e=>`BEGIN:VEVENT\r\nDTSTART:${e.start}\r\nDTEND:${e.end}\r\nSUMMARY:${e.name}\r\nDESCRIPTION:${e.desc}\r\nLOCATION:${e.loc}\r\nUID:${e.start}-wedding@tanviandjustin.com\r\nSTATUS:CONFIRMED\r\nEND:VEVENT`).join('\r\n');
+    const content=`BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Tanvi & Justin Wedding//EN\r\nCALSCALE:GREGORIAN\r\nMETHOD:PUBLISH\r\n${vevents}\r\nEND:VCALENDAR`;
     const blob=new Blob([content],{type:'text/calendar;charset=utf-8'});
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
