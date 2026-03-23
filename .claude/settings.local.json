@@ -8,7 +8,9 @@
       "Bash(where npm:*)",
       "Read(//c/Windows/System32/WindowsPowerShell//**)",
       "Read(//c/Program Files/**)",
-      "Read(//c/Users/Jdel3/AppData/Roaming/**)"
+      "Read(//c/Users/Jdel3/AppData/Roaming/**)",
+      "Bash(mv \"images/imagesshopping1.jpg.jpg\" \"images/shopping1.jpg\")",
+      "Bash(mv \"images/imagesshopping2.jpg.jpg\" \"images/shopping2.jpg\")"
     ]
   }
 }
