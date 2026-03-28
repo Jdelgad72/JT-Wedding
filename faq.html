@@ -217,6 +217,19 @@
     });
   });
 
+  if(window.location.hash){
+    const target=document.querySelector(window.location.hash);
+    if(target){
+      const btn=target.querySelector('.faq-question');
+      const answer=target.querySelector('.faq-answer');
+      if(btn&&answer){
+        btn.classList.add('open');
+        answer.classList.add('open');
+        setTimeout(()=>target.scrollIntoView({behavior:'smooth',block:'center'}),100);
+      }
+    }
+  }
+
   document.querySelectorAll('.tab-btn').forEach(btn=>{
     btn.addEventListener('click',function(){
       document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
