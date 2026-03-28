@@ -293,9 +293,18 @@
     const email=document.getElementById('email').value.trim();
     const attendance=document.querySelector('input[name="attendance"]:checked')?.value;
     let valid=true;
+    const phone=document.getElementById('phone').value.trim();
+    const indiaArrivalCheck=document.getElementById('indiaArrival').value;
+    const indiaDepartureCheck=document.getElementById('indiaDeparture').value;
+    const danceCheck=document.querySelector('input[name="dance"]:checked')?.value;
+    const attending=attendance==='yes';
+
     if(!name){document.getElementById('fullName').classList.add('is-invalid');valid=false;} else document.getElementById('fullName').classList.remove('is-invalid');
     if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){document.getElementById('email').classList.add('is-invalid');valid=false;} else document.getElementById('email').classList.remove('is-invalid');
+    if(!phone){document.getElementById('phone').classList.add('is-invalid');valid=false;} else document.getElementById('phone').classList.remove('is-invalid');
     if(!attendance){alert('Please select whether you will attend.');valid=false;}
+    if(attending && (!indiaArrivalCheck||!indiaDepartureCheck)){document.getElementById('india-error').style.display='block';valid=false;} else document.getElementById('india-error').style.display='none';
+    if(attending && !danceCheck){document.getElementById('sangeet-error').style.display='block';valid=false;} else document.getElementById('sangeet-error').style.display='none';
     if(!valid) return;
 
     const attending=attendance==='yes';
