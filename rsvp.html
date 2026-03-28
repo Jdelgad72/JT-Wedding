@@ -307,12 +307,11 @@
     if(attending && !danceCheck){document.getElementById('sangeet-error').style.display='block';valid=false;} else document.getElementById('sangeet-error').style.display='none';
     if(!valid) return;
 
-    const attending=attendance==='yes';
     const guestCount=attending?parseInt(document.getElementById('guestCount').value)||1:0;
-    const indiaArrival=document.getElementById('indiaArrival').value;
-    const indiaDeparture=document.getElementById('indiaDeparture').value;
+    const indiaArrival=indiaArrivalCheck;
+    const indiaDeparture=indiaDepartureCheck;
     const indiaDays=(indiaArrival&&indiaDeparture)?Math.round((new Date(indiaDeparture)-new Date(indiaArrival))/86400000):null;
-    const danceAnswer=document.querySelector('input[name="dance"]:checked')?.value||null;
+    const danceAnswer=danceCheck||null;
     const additionalGuests=[];
     for(let i=2;i<=guestCount;i++){
       const gName=document.querySelector(`.guest-name[data-guest="${i}"]`)?.value.trim()||'';
