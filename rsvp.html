@@ -221,7 +221,7 @@
 
   async function sendNotifications(record){
     if(CONFIG.emailjs_public_key==='YOUR_EMAILJS_PUBLIC_KEY') return;
-    const params={guest_name:record.name,guest_email:record.email,guest_phone:record.phone||'Not provided',attending:record.attending?'YES - Attending':'NO - Declining',guests:record.attending?record.guests+' guest(s)':'-',meal:record.meal||'-',events:record.events||'-',allergies:record.allergies||'None',message:record.message||'-',submitted_at:record.submittedAt,couple:CONFIG.coupleName,venue:CONFIG.venue};
+    const params={guest_name:record.name,guest_email:record.email,guest_phone:record.phone||'Not provided',attending:record.attending?'YES - Attending':'NO - Declining',guests:record.attending?record.guests+' guest(s)':'-',allergies:record.allergies||'None',india_arrival:record.indiaArrival||'Not provided',india_departure:record.indiaDeparture||'Not provided',india_days:record.indiaDays!=null?record.indiaDays+' days':'Not provided',sangeet:record.dance||'Not answered',message:record.message||'-',submitted_at:record.submittedAt,couple:CONFIG.coupleName,venue:CONFIG.venue};
     for(const recipient of CONFIG.notify){
       try{await emailjs.send(CONFIG.emailjs_service_id,CONFIG.emailjs_template_id,{...params,to_name:recipient.name,to_email:recipient.email});}
       catch(err){console.warn('EmailJS send failed for',recipient.email,err);}
